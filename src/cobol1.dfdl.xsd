@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://www.w3.org/2001/XMLSchema"
+    xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/" 
+    targetNamespace="http://example.com"
+    xmlns:tns="http://example.com"
+    xmlns:ex="http://example.com"
+    xmlns:fn="http://www.w3.org/2005/xpath-functions">
+
+  <include schemaLocation="cobolFormat1.dfdl.xsd"/>
+
+  <annotation>
+    <appinfo source="http://www.ogf.org/dfdl/">
+      <!--
+      Use lengthKind explicit here because most of this file is definitions of
+      fixed length simple types. There are only a few complex types here, so we
+      put dfdl:lengthKind="implicit" on just those few.
+      -->
+      <dfdl:format ref="tns:cobolFormat1"
+        lengthKind="explicit"/>
+    </appinfo>
+  </annotation>
+
+  <element name="RECORDS" dfdl:lengthKind="implicit">
+    <complexType>
+      <sequence >
+        <element maxOccurs="unbounded" ref="tns:RECORD"/>
+      </sequence>
+    </complexType>
+  </element>
+
+  <element name="RECORD" type="tns:myRecordType" dfdl:lengthKind="implicit"/>
+
+  <complexType name="myRecordType">
+    <sequence>
+      <annotation>
+        <documentation>
+          <![CDATA[
+01 MY-RECORD. 
+ 05 CLAIM-NUMBER             PIC X(19). 
+ 05 ADMISSION-DATE           PIC X(6).
+ 05 FROM-DATE                PIC X(6).
+ 05 THRU-DATE                PIC X(6).
+ 05 DISCHARGE-DATE           PIC X(6).
+ 05 FULL-DAYS                PACKED-DECIMAL PIC S9(5). 
+ 05 COINSURANCE-DAYS         BINARY         PIC 9(4). 
+ 05 LIFETIME-RES-DAYS        BINARY         PIC 9(6). 
+ 05 INTERMEDIARY-NUM         BINARY         PIC 9(10). 
+ 05 PROVIDER                                PIC X(13). 
+ 05 INPATIENT-DED            PACKED-DECIMAL PIC S9(4)V99.
+ 05 BLOOD-DED                PACKED-DECIMAL PIC S9(4)V99.
+ 05 TOTAL-CHARGES      PIC S9(7)V99 DISPLAY SIGN LEADING.
+ 05 PATIENT-STATUS                          PIC X(2). 
+ 05 BLOOD-PINTS-FURNISHED    BINARY         PIC 9(5). 
+ 05 BLOOD-PINTS-REPLACED     BINARY         PIC 9(4). 
+ 05 SEQUENCE-COUNTER         BINARY         PIC 9(3). 
+ 05 TRANSACTION-IND                         PIC 9. 
+ 05 BILL-SOURCE                             PIC 9. 
+ 05 BENEFITS-EXHAUST-IND                    PIC 9. 
+ 05 BENEFITS-PAY-IND                        PIC 9. 
+ 05 AUTO-ADJUSTMENT-IND                     PIC X. 
+ 05 INTERMEDIARY-CTRL-NUM                   PIC X(23).
+]]>
+        </documentation>
+      </annotation>
+      <element name="CLAIM-NUMBER" type="xs:string" dfdl:length="19"/>
+      <element name="ADMISSION-DATE" type="tns:date6Chars"/>
+      <element name="FROM-DATE" type="tns:date6Chars"/>
+      <element name="THRU-DATE" type="tns:date6Chars"/>
+      <element name="DISCHARGE-DATE" type="tns:date6Chars"/>
+      <element name="FULL-DAYS" type="tns:signedPackedInt5Digits"/>
+      <element name="COINSURANCE-DAYS" type="tns:binary4Digits"/>
+      <element name="LIFETIME-RES-DAYS" type="tns:binary6Digits"/>
+      <element name="INTERMEDIARY-NUM" type="tns:binary10Digits"/>
+      <element name="PROVIDER" type="xs:string" dfdl:length="13"/>
+      <element name="INPATIENT-DED" type="tns:packedMoney4Digits"/>
+      <element name="BLOOD-DED" type="tns:packedMoney4Digits"/>
+      <element name="TOTAL-CHARGES" type="tns:displayMoney7Digits"/>
+      <element name="PATIENT-STATUS" type="xs:string" dfdl:length="2"/>
+      <element name="BLOOD-PINTS-FURNISHED" type="tns:binary5Digits"/>
+      <element name="BLOOD-PINTS-REPLACED" type="tns:binary4Digits"/>
+      <element name="SEQUENCE-COUNTER" type="tns:binary3Digits"/>
+      <element name="BILL-SOURCE" type="tns:display1Digit"/>
+      <element name="BENEFITS-EXHAUST-IND" type="tns:display1Digit"/>
+      <element name="BENEFITS-PAY-IND" type="tns:display1Digit"/>
+      <element name="AUTO-ADJUSTMENT-IND" type="xs:string" dfdl:length="1"/>
+      <element name="INTERMEDIARY-CTRL-NUM" type="xs:string" dfdl:length="23"/>
+    </sequence>
+  </complexType>
+
+  <simpleType name="date6Chars"
+              dfdl:representation="text"
+              dfdl:decimalSigned="yes"
+              dfdl:length="6">
+    <restriction base="xs:string" />
+  </simpleType>
+  
+  <simpleType name="signedPackedInt5Digits"
+    dfdl:representation="binary"
+    dfdl:binaryNumberRep="packed"
+    dfdl:decimalSigned="yes" 
+    dfdl:length="3" >
+    <restriction base="xs:int" >
+      <maxInclusive value="99999"/>
+      <minInclusive value="-99999"/>
+    </restriction>
+  </simpleType>
+  
+  <!-- TBD Alignment requirements for COBOL binary numbers? -->
+  
+  <simpleType name="binary3Digits"
+    dfdl:representation="binary"
+    dfdl:binaryNumberRep="binary"
+    dfdl:length="2"> 
+    <restriction base="xs:int">
+      <maxInclusive value="999"/>
+      <minInclusive value="-999"/>
+    </restriction>
+  </simpleType>
+  
+  <simpleType name="binary4Digits"
+    dfdl:representation="binary"
+    dfdl:binaryNumberRep="binary"
+    dfdl:length="2"> 
+    <restriction base="xs:int">
+      <maxInclusive value="9999"/>
+      <minInclusive value="-9999"/>
+    </restriction>
+  </simpleType>
+  
+  <simpleType name="binary5Digits"
+    dfdl:representation="binary"
+    dfdl:binaryNumberRep="binary"
+    dfdl:length="4"> 
+    <restriction base="xs:int" >
+      <maxInclusive value="99999"/>
+      <minInclusive value="-99999"/>
+    </restriction>
+  </simpleType>
+  
+  <simpleType name="binary6Digits"
+    dfdl:representation="binary"
+    dfdl:binaryNumberRep="binary"
+    dfdl:length="4"> 
+    <restriction base="xs:int" >
+      <maxInclusive value="999999"/>
+      <minInclusive value="-999999"/>
+    </restriction>
+  </simpleType>
+  
+  <simpleType name="binary10Digits"
+    dfdl:representation="binary"
+    dfdl:binaryNumberRep="binary"
+    dfdl:length="8"> 
+    <restriction base="xs:long" >
+      <maxInclusive value="9999999999"/>
+      <minInclusive value="-9999999999"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="packedMoney4Digits"
+    dfdl:representation="binary"
+    dfdl:binaryNumberRep="packed"
+    dfdl:decimalSigned="yes" 
+    dfdl:length="4"
+    dfdl:binaryDecimalVirtualPoint="2">
+    <restriction base="xs:decimal" >
+      <maxInclusive value="9999.99"/>
+      <minInclusive value="-9999.99"/>
+    </restriction>
+  </simpleType>
+
+
+  <!--
+  This type uses dfdl:textNumberPattern character 'V' for virtual decimal point
+
+  It is zoned decimal with trailing overpunched sign.
+
+  This is not officially available until Daffodil 3.5.0
+  -->
+
+  <simpleType
+    name="displayMoney7Digits"
+    dfdl:representation="text"
+    dfdl:textNumberRep="zoned"
+    dfdl:textZonedSignStyle="asciiStandard"
+    dfdl:decimalSigned="yes"
+    dfdl:textNumberPattern="0000000V00+"
+    dfdl:length="9">
+    <restriction base="xs:decimal" >
+      <maxInclusive value="9999999.99"/>
+      <minInclusive value="-9999999.99"/>
+    </restriction>
+  </simpleType>
+  
+  <simpleType name="display1Digit"
+    dfdl:representation="text"
+    dfdl:textNumberRep="zoned"
+    dfdl:textNumberPattern="+0" 
+    dfdl:decimalSigned="no" 
+    dfdl:length="1">
+    <restriction base="xs:unsignedInt" >
+      <maxInclusive value="9"/>
+      <minInclusive value="0"/>
+    </restriction>
+  </simpleType>
+  
+</schema>

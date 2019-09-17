@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testSuite
+  xmlns:tdml="http://www.ibm.com/xmlns/dfdl/testData"
+  xmlns="http://www.ibm.com/xmlns/dfdl/testData"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:ex="http://example.com"
+  xmlns:daf="urn:ogf:dfdl:2013:imp:daffodil.apache.org:2018:ext"
+  defaultConfig="cfg"
+  defaultRoundTrip="onePass">
+
+  <defineConfig name="cfg">
+    <daf:tunables>
+      <!--
+      We suppress encodingErrorPolicyError because this is a portable schema that should work with IBM DFDL, but
+      Daffodil emits a warning about every use of dfdl:encodingErrorPolicy='error'.
+      -->
+      <daf:suppressSchemaDefinitionWarnings>
+        encodingErrorPolicyError
+      </daf:suppressSchemaDefinitionWarnings>
+    </daf:tunables>
+  </defineConfig>
+
+  <parserTestCase name="testCobol1" model="cobol1.dfdl.xsd">
+    <document>
+      <documentPart type="text" encoding="ebcdic-cp-us">1234567890123456789</documentPart>
+      <documentPart type="text" encoding="ebcdic-cp-us">020161</documentPart>
+      <documentPart type="text" encoding="ebcdic-cp-us">020161</documentPart>
+      <documentPart type="text" encoding="ebcdic-cp-us">020161</documentPart>
+      <documentPart type="text" encoding="ebcdic-cp-us">123199</documentPart>
+      <documentPart type="byte">99999C</documentPart>
+      <documentPart type="byte">270f</documentPart>
+      <documentPart type="byte">000f423f</documentPart>
+      <documentPart type="byte">00000002540be3ff</documentPart>
+      <documentPart type="text" encoding="ebcdic-cp-us">PROVIDER12345</documentPart>
+      <documentPart type="byte">0999999C</documentPart>
+      <documentPart type="byte">0999999C</documentPart>
+      <documentPart type="text" encoding="ebcdic-cp-us">99999999y</documentPart>
+      <documentPart type="text" encoding="ebcdic-cp-us">AA</documentPart>
+      <documentPart type="byte">0001869f</documentPart>
+      <documentPart type="byte">270f</documentPart>
+      <documentPart type="byte">03e7</documentPart>
+      <documentPart type="byte">F9</documentPart>
+      <documentPart type="byte">F8</documentPart>
+      <documentPart type="byte">F7</documentPart>
+      <documentPart type="text" encoding="ebcdic-cp-us">X</documentPart>
+      <documentPart type="text" encoding="ebcdic-cp-us">A12345678901234567890AB</documentPart>
+    </document>
+    <infoset>
+      <dfdlInfoset>
+        <ex:RECORD xmlns="">
+          <CLAIM-NUMBER>1234567890123456789</CLAIM-NUMBER>
+          <ADMISSION-DATE>020161</ADMISSION-DATE>
+          <FROM-DATE>020161</FROM-DATE>
+          <THRU-DATE>020161</THRU-DATE>
+          <DISCHARGE-DATE>123199</DISCHARGE-DATE>
+          <FULL-DAYS>99999</FULL-DAYS>
+          <COINSURANCE-DAYS>9999</COINSURANCE-DAYS>
+          <LIFETIME-RES-DAYS>999999</LIFETIME-RES-DAYS>
+          <INTERMEDIARY-NUM>9999999999</INTERMEDIARY-NUM>
+          <PROVIDER>PROVIDER12345</PROVIDER>
+          <INPATIENT-DED>9999.99</INPATIENT-DED>
+          <BLOOD-DED>9999.99</BLOOD-DED>
+          <TOTAL-CHARGES>-9999999.99</TOTAL-CHARGES>
+          <PATIENT-STATUS>AA</PATIENT-STATUS>
+          <BLOOD-PINTS-FURNISHED>99999</BLOOD-PINTS-FURNISHED>
+          <BLOOD-PINTS-REPLACED>9999</BLOOD-PINTS-REPLACED>
+          <SEQUENCE-COUNTER>999</SEQUENCE-COUNTER>
+          <BILL-SOURCE>9</BILL-SOURCE>
+          <BENEFITS-EXHAUST-IND>8</BENEFITS-EXHAUST-IND>
+          <BENEFITS-PAY-IND>7</BENEFITS-PAY-IND>
+          <AUTO-ADJUSTMENT-IND>X</AUTO-ADJUSTMENT-IND>
+          <INTERMEDIARY-CTRL-NUM>A12345678901234567890AB</INTERMEDIARY-CTRL-NUM>
+        </ex:RECORD>
+      </dfdlInfoset>
+    </infoset>
+  </parserTestCase>
+
+</testSuite>
