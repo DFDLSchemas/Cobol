@@ -8,12 +8,12 @@
   xmlns:ex="http://example.com"
   xmlns:fn="http://www.w3.org/2005/xpath-functions">
 
-  <include schemaLocation="org/apache/daffodil/xsd/DFDLGeneralFormat.dfdl.xsd"/>
+  <include schemaLocation="org/apache/daffodil/xsd/DFDLGeneralFormatPortable.dfdl.xsd"/>
 
   <annotation>
     <appinfo source="http://www.ogf.org/dfdl/">
       <dfdl:defineFormat name="cobolFormat1">
-        <dfdl:format ref="tns:GeneralFormatPortable"
+        <dfdl:format ref="tns:GeneralFormat"
                      binaryBooleanFalseRep="0"
                      binaryBooleanTrueRep="1"
                      binaryDecimalVirtualPoint="0"

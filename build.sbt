@@ -7,7 +7,7 @@ version := "0.0.1-SNAPSHOT"
 scalaVersion := "2.12.17"
  
 libraryDependencies ++= Seq(
-  "org.apache.daffodil" %% "daffodil-tdml-processor" % "3.5.0-SNAPSHOT" % "test",
+  "org.apache.daffodil" %% "daffodil-tdml-processor" % "3.5.0" % "test",
   "junit" % "junit" % "4.13.2" % "test",
   "com.github.sbt" % "junit-interface" % "0.13.3" % "test",
   "org.apache.logging.log4j" % "log4j-core" % "2.19.0" % "test",
@@ -35,15 +35,12 @@ useCoursier := false
 // src directory contains all source files (they are distinguished by file types)
 // test directory contains all test files.
 //
-lazy val root = (project in file("."))
-  .settings(
-    Project.inConfig(Compile)(flattenSettings("src")),
-    Project.inConfig(Test)(flattenSettings("test")),
-  )
+Compile / unmanagedSourceDirectories := Seq(baseDirectory.value / "src")
+Compile / unmanagedResourceDirectories := (Compile / unmanagedSourceDirectories).value
+Compile / unmanagedSources / includeFilter := "*.java" | "*.scala"
+Compile / unmanagedResources / excludeFilter := (Compile / unmanagedSources / includeFilter).value
 
-def flattenSettings(name: String) = Seq(
-  unmanagedSourceDirectories := Seq(baseDirectory.value / name),
-  unmanagedResourceDirectories := unmanagedSourceDirectories.value,
-  unmanagedSources / includeFilter := "*.java" | "*.scala",
-  unmanagedResources / excludeFilter := (unmanagedSources / includeFilter).value,
-)
+Test / unmanagedSourceDirectories := Seq(baseDirectory.value / "test")
+Test / unmanagedResourceDirectories := (Test / unmanagedSourceDirectories).value
+Test / unmanagedSources / includeFilter := "*.java" | "*.scala"
+Test / unmanagedResources / excludeFilter := (Test / unmanagedSources / includeFilter).value
