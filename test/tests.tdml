@@ -8,7 +8,8 @@
   xmlns:ex="http://example.com"
   xmlns:daf="urn:ogf:dfdl:2013:imp:daffodil.apache.org:2018:ext"
   defaultConfig="cfg"
-  defaultRoundTrip="onePass">
+  defaultRoundTrip="onePass"
+  defaultValidation="limited">
 
   <defineConfig name="cfg">
     <daf:tunables>
@@ -22,13 +23,14 @@
     </daf:tunables>
   </defineConfig>
 
-  <parserTestCase name="testCobol1" model="cobol1.dfdl.xsd">
+  <parserTestCase name="testCobol1" model="cobol1.dfdl.xsd"
+    roundTrip="twoPass">
     <document>
       <documentPart type="text" encoding="ebcdic-cp-us">1234567890123456789</documentPart>
       <documentPart type="text" encoding="ebcdic-cp-us">020161</documentPart>
       <documentPart type="text" encoding="ebcdic-cp-us">020161</documentPart>
-      <documentPart type="text" encoding="ebcdic-cp-us">020161</documentPart>
-      <documentPart type="text" encoding="ebcdic-cp-us">123199</documentPart>
+      <documentPart type="text" encoding="ebcdic-cp-us">020106</documentPart>
+      <documentPart type="text" encoding="ebcdic-cp-us">020106</documentPart>
       <documentPart type="byte">99999C</documentPart>
       <documentPart type="byte">270f</documentPart>
       <documentPart type="byte">000f423f</documentPart>
@@ -36,14 +38,16 @@
       <documentPart type="text" encoding="ebcdic-cp-us">PROVIDER12345</documentPart>
       <documentPart type="byte">0999999C</documentPart>
       <documentPart type="byte">0999999C</documentPart>
-      <documentPart type="text" encoding="ebcdic-cp-us">99999999y</documentPart>
+      <!-- note leading overpunched sign below. The 'R' means -9 as the digit in EBCDIC. -->
+      <!-- Fix for DAFFODIL-2873 (Daffodil 3.7.0 or above) is required for ebcdic overpunched signs -->
+      <documentPart type="text" encoding="ebcdic-cp-us">R99999999</documentPart>
       <documentPart type="text" encoding="ebcdic-cp-us">AA</documentPart>
       <documentPart type="byte">0001869f</documentPart>
       <documentPart type="byte">270f</documentPart>
       <documentPart type="byte">03e7</documentPart>
-      <documentPart type="byte">F9</documentPart>
-      <documentPart type="byte">F8</documentPart>
-      <documentPart type="byte">F7</documentPart>
+      <documentPart type="byte">C9</documentPart>
+      <documentPart type="byte">C8</documentPart>
+      <documentPart type="byte">F7</documentPart><!-- TwoPass because this F7 is canonicalized to C7 by unparsing -->
       <documentPart type="text" encoding="ebcdic-cp-us">X</documentPart>
       <documentPart type="text" encoding="ebcdic-cp-us">A12345678901234567890AB</documentPart>
     </document>
@@ -52,9 +56,9 @@
         <ex:RECORD xmlns="">
           <CLAIM-NUMBER>1234567890123456789</CLAIM-NUMBER>
           <ADMISSION-DATE>020161</ADMISSION-DATE>
-          <FROM-DATE>020161</FROM-DATE>
-          <THRU-DATE>020161</THRU-DATE>
-          <DISCHARGE-DATE>123199</DISCHARGE-DATE>
+          <FROM-DATE>1961-02-01</FROM-DATE>
+          <THRU-DATE>2006-02-01</THRU-DATE>
+          <DISCHARGE-DATE>020106</DISCHARGE-DATE>
           <FULL-DAYS>99999</FULL-DAYS>
           <COINSURANCE-DAYS>9999</COINSURANCE-DAYS>
           <LIFETIME-RES-DAYS>999999</LIFETIME-RES-DAYS>

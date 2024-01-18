@@ -66,8 +66,13 @@
       </annotation>
       <element name="CLAIM-NUMBER" type="xs:string" dfdl:length="19"/>
       <element name="ADMISSION-DATE" type="tns:date6Chars"/>
-      <element name="FROM-DATE" type="tns:date6Chars"/>
-      <element name="THRU-DATE" type="tns:date6Chars"/>
+      <!--
+      COBOL doesn't actually have a date type, but it is natural
+      to want to parse this data into a DFDL date type, so a couple of these
+      date fields use a type derived from DFDL's xs:date type.
+      -->
+      <element name="FROM-DATE" type="tns:date6CharsAsDate"/>
+      <element name="THRU-DATE" type="tns:date6CharsAsDate"/>
       <element name="DISCHARGE-DATE" type="tns:date6Chars"/>
       <element name="FULL-DAYS" type="tns:signedPackedInt5Digits"/>
       <element name="COINSURANCE-DAYS" type="tns:binary4Digits"/>
@@ -94,6 +99,27 @@
               dfdl:decimalSigned="yes"
               dfdl:length="6">
     <restriction base="xs:string" />
+  </simpleType>
+
+  <simpleType name="date6CharsAsDate"
+              dfdl:representation="text"
+              dfdl:calendarPatternKind="explicit"
+              dfdl:calendarPattern="MMddyy"
+              dfdl:calendarCenturyStart="50"
+              dfdl:calendarTimeZone=""
+              dfdl:length="6">
+    <!--
+    dfdl:calendarCenturyStart="50"
+    means if year is 49 or less it will be assumed century 2000.
+    if year is 50 to 99 it will be assumed century 1900
+    -->
+    <restriction base="xs:date">
+      <!-- These facets are not supported yet: JIRA DAFFODIL-2671 -->
+      <!--
+      <minInclusive value="1950-01-01"/>
+      <maxInclusive value="2049-12-31"/>
+      -->
+    </restriction>
   </simpleType>
   
   <simpleType name="signedPackedInt5Digits"
@@ -175,7 +201,8 @@
   <!--
   This type uses dfdl:textNumberPattern character 'V' for virtual decimal point
 
-  It is zoned decimal with trailing overpunched sign.
+  It is zoned decimal with leading overpunched sign. The character set is ebcdic, not ascii.
+  So dfdl:textZonedSignStyle property is not needed.
 
   This is not officially available until Daffodil 3.5.0
   -->
@@ -184,9 +211,9 @@
     name="displayMoney7Digits"
     dfdl:representation="text"
     dfdl:textNumberRep="zoned"
-    dfdl:textZonedSignStyle="asciiStandard"
+    dfdl:encoding="ebcdic-cp-us"
     dfdl:decimalSigned="yes"
-    dfdl:textNumberPattern="0000000V00+"
+    dfdl:textNumberPattern="+0000000V00"
     dfdl:length="9">
     <restriction base="xs:decimal" >
       <maxInclusive value="9999999.99"/>
