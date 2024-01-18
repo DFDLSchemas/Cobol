@@ -17,5 +17,4 @@ class Tests {
 
   @Test def testCobol1 { runner.runOneTest("testCobol1") }
 
-
 }

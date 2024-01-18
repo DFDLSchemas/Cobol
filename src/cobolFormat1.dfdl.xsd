@@ -8,7 +8,7 @@
   xmlns:ex="http://example.com"
   xmlns:fn="http://www.w3.org/2005/xpath-functions">
 
-  <include schemaLocation="org/apache/daffodil/xsd/DFDLGeneralFormatPortable.dfdl.xsd"/>
+  <include schemaLocation="/org/apache/daffodil/xsd/DFDLGeneralFormatPortable.dfdl.xsd"/>
 
   <annotation>
     <appinfo source="http://www.ogf.org/dfdl/">
@@ -29,6 +29,7 @@
                      textBooleanJustification="left"
                      textBooleanTrueRep="%#r00;"
                      textCalendarPadCharacter="0"
+                     textCalendarJustification="right"
                      textNumberJustification="right"
                      textNumberPadCharacter="0"
                      textNumberRep="zoned"
@@ -37,11 +38,47 @@
                      textPadKind="none"
                      textStandardBase="10"
                      textStandardZeroRep=""
-                     textTrimKind="none"
-                     textZonedSignStyle="asciiStandard">
+                     textStringJustification="left"
+                     textTrimKind="none">
+          <!--
+          Property textZonedSignStyle is not needed because encoding is ebcdic-cp-us and that property
+          only applies for ascii-derived encodings.
+          -->
         </dfdl:format>
       </dfdl:defineFormat>
       <dfdl:format ref="tns:cobol1Format"/>
     </appinfo>
   </annotation>
+
+  <!-- DISPLAY is text with single byte characters. PIC give lengths and string vs. numeric type.
+   Strings use X - any character, A for alphabetic only. Numbers use 9.
+   For DISPLAY numbers, by default it is overpunched trailing sign (when S indicates a sign).
+   SIGN SEPARATE LEADING/TRAILING can be specified for regular sign.
+   A real decimal point in the pattern will be expected in the data. P and V are used for implied decimal point.
+   -->
+  <!-- DISPLAY-1 is text with double-byte characters (zOS uses EBCDIC, others may be ASCII) -->
+  <!-- NATIONAL is text with UTF-16 characters (2 bytes)
+  TBD: can zoned numbers be represented? How does overpunched sign work in UTF-16
+  -->
+  <!-- COMP-1 is binary xs:float -->
+  <!-- COMP-2 is binary xs:double -->
+  <!-- COMP-3 is packed decimal. Maximum of 31 digits (38 in Micro Focus Cobol)
+  If unsigned, final sign nibble is F -->
+  <!-- BINARY, COMP, COMP-4 is two's complement, 2, 4, or 8 bytes depending on number of digits in PIC
+   which may have P or V to indicate scaling. Ranges of numbers are constrained by PIC digits.
+   Ex with V is COMP PIC S99V99 which has range of values from -99.99 to +99.99.
+    -->
+  <!-- COMP-5 is "native binary" i.e., two's complement, but allows full range of binary values.
+       So PIC S9999 has range -32768 to +32767, and PIC 9999 has range 0 to 65535.
+       Ex with V is COMP-5 PIC S99V99 which has range of values from -327.68 to +327.67.
+  -->
+  <!-- COMP-6 is BCD (no sign nibble) if unsigned, and packed-decimal if signed.
+  Not all cobol flavors support COMP-6.
+   -->
+  <!-- COMP-X is always unsigned (PIC may not contain S) and always stored big-endian order regardless of the
+  machine and compiler. Like COMP-5 it uses two's complement, and the full binary range of values.
+  The PIC using X is defining bytes, not digits, so COMP-X PIC X(5) is a 5 byte unsigned integer.
+  -->
+
+
 </schema>
