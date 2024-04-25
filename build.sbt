@@ -6,16 +6,6 @@ version := "0.0.2-SNAPSHOT"
 
 scalaVersion := "2.12.18"
 
-libraryDependencies ++= Seq(
-  "org.apache.daffodil" %% "daffodil-tdml-processor" % "3.7.0-SNAPSHOT" % "test",
-  "junit" % "junit" % "4.13.2" % "test",
-  "com.github.sbt" % "junit-interface" % "0.13.3" % "test",
-)
-
-testOptions += Tests.Argument(TestFrameworks.JUnit, "-v")
-
-crossPaths := false
-
 retrieveManaged := true
 
 useCoursier := false
@@ -27,18 +17,6 @@ useCoursier := false
 //
 // IBMDFDLCrossTesterPlugin.settings
 
-//
-// Use flatter simple folder structure.
-//
-// src directory contains all source files (they are distinguished by file types)
-// test directory contains all test files.
-//
-Compile / unmanagedSourceDirectories := Seq(baseDirectory.value / "src")
-Compile / unmanagedResourceDirectories := (Compile / unmanagedSourceDirectories).value
-Compile / unmanagedSources / includeFilter := "*.java" | "*.scala"
-Compile / unmanagedResources / excludeFilter := (Compile / unmanagedSources / includeFilter).value
+enablePlugins(DaffodilPlugin)
 
-Test / unmanagedSourceDirectories := Seq(baseDirectory.value / "test")
-Test / unmanagedResourceDirectories := (Test / unmanagedSourceDirectories).value
-Test / unmanagedSources / includeFilter := "*.java" | "*.scala"
-Test / unmanagedResources / excludeFilter := (Test / unmanagedSources / includeFilter).value
+daffodilFlatLayout := true
