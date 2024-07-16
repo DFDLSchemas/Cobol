@@ -4,8 +4,6 @@ organization := "com.owl"
 
 version := "0.0.2-SNAPSHOT"
 
-scalaVersion := "2.12.18"
-
 retrieveManaged := true
 
 useCoursier := false
