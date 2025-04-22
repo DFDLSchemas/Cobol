@@ -8,13 +8,13 @@ import org.junit.AfterClass
 object Tests {
   lazy val runner = Runner("", "tests.tdml")
 
-  @AfterClass def shutdown: Unit = { runner.reset }
+  @AfterClass def shutdown: Unit = { runner.reset() }
 
 }
 
 class Tests {
   import Tests._
 
-  @Test def testCobol1 { runner.runOneTest("testCobol1") }
+  @Test def testCobol1 = { runner.runOneTest("testCobol1") }
 
 }
